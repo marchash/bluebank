@@ -1,0 +1,32 @@
+<ion-view hide-nav-bar="true">
+<div class="modal" ng-controller="LoginCtrl">
+    <ion-header-bar class="bar-balanced" align-title="center">
+      <h1 class="title">Login</h1>
+    </ion-header-bar> 
+    <ion-content hide-nav-bar="true" padding="true">
+      <div class='item item-image'><img src='img/frontImage.png'></div>
+      <br>
+      <form class="list">
+        <label class="item item-input">
+          <input type="text" placeholder="E-mail" ng-model="user.username" required>
+        </label>
+        <label class="item item-input">
+          <input type="password" placeholder="Senha" ng-model="user.password" required>
+        </label>
+        <br><br>
+        <div class="padding">
+          <button class="button button-block button-balanced" ng-click="login(user)">
+          <ion-spinner class="spinner-light" icon="ripple" ng-show="doingLogin"></ion-spinner>
+            <span ng-hide="doingLogin">Login</span></button>
+        </div>
+        <div class="padding">
+          <button class="button button-block button-calm" ng-click="recuperarSenha(user)">Esqueci a senha
+          </button>
+        </div>
+        <div class="padding">
+          <button class="button button-block button-positive" ng-click="telaCadastro()">Cadastro</button>
+        </div>
+      </form>
+    </ion-content>
+</div>
+</ion-view>
