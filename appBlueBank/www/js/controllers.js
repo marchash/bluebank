@@ -1,4 +1,4 @@
-angular.module('bluebank.controllers', ['ui.mask'])
+angular.module('bluebank.controllers', ['ui.mask', 'ui.utils.masks'])
 .controller('AppCtrl', function($scope, $state, $ionicModal) {
 
   $ionicModal.fromTemplateUrl('templates/login.html', function(modal) {
@@ -20,7 +20,7 @@ angular.module('bluebank.controllers', ['ui.mask'])
   $ionicSideMenuDelegate.canDragContent(false);
 
   $scope.user = {
-    username: null,
+    username: '',
     password: ''
   };
 
@@ -122,12 +122,14 @@ angular.module('bluebank.controllers', ['ui.mask'])
     user.set("username", signupForm.email.toLowerCase());
     user.set("password", signupForm.password);
     user.set("email", signupForm.email);
-    user.set("numeroContaCorrente", signupForm.numeroContaCorrente);
     user.set("cpf", signupForm.cpf);
 
     var Agencia = Parse.Object.extend('Agency');
     buscaAgencia = new Parse.Query(Agencia);
     buscaAgencia.equalTo("agencyCode", signupForm.agency);
+
+    var Accounts = Parse.Object.extend("Account");
+    var account = new Accounts();
 
     user.signUp(null, {
 
@@ -137,12 +139,19 @@ angular.module('bluebank.controllers', ['ui.mask'])
           $scope.doingSignup = false;
         }, 1);
 
+        account.set("accountOwner", user);
+        account.set("accountNumber", signupForm.numeroContaCorrente);
+        account.set("balanceAvailable", 1000);
+        account.save().then(function(account){
+          user.set("accountId", account);
+        });
+
         buscaAgencia.first().then(function(agency){
           var relacao = agency.relation('clients');
           relacao.add(user);
-          agency.save();
           user.set("agency", agency);
           user.save();
+          agency.save();
         });
 
         var alertPopup = $ionicPopup.alert({
@@ -151,7 +160,9 @@ angular.module('bluebank.controllers', ['ui.mask'])
         });
 
         alertPopup.then(function(res) {
-          Parse.User.logOut();
+          $timeout(function() {
+            Parse.User.logOut();
+          }, 5000);
           $ionicHistory.nextViewOptions({
             disableBack: true
           });
@@ -173,8 +184,93 @@ angular.module('bluebank.controllers', ['ui.mask'])
   };
 })
 
-.controller('HomeCtrl', function($ionicLoading, $ionicHistory, $scope, $state, $ionicPopup, $timeout, $cordovaGeolocation, $ionicPlatform, $cordovaInAppBrowser) {
+.controller('HomeCtrl', function($ionicLoading, $ionicHistory, $scope, $state, $ionicPopup, $timeout) {
+  // This a temporary solution to solve an issue where the back button is displayed when it should not be.
+  $ionicHistory.clearHistory();
 
+  var user = Parse.User.current();
+  var Users = Parse.Object.extend('User');
+  var Accounts = Parse.Object.extend('Account');
+  var buscaAccount = new Parse.Query(Accounts);
+  var owner;
+  buscaAccount.equalTo('accountOwner', user);
+  buscaAccount.first().then(function(result){
+    $timeout(function(){
+      $scope.saldo = result.get('balanceAvailable').toFixed(2);
+      owner = result;
+    }, 0);
+  });
+
+  var buscaReceiver = new Parse.Query(Accounts);
+  var Agencias = Parse.Object.extend('Agency');
+  var buscaAgencia = new Parse.Query(Agencias);
+
+  $scope.doTransaction = function(transferForm){
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'Confirmar dados',
+      subTitle: 'Verifique os dados abaixo para validar a transferência',
+      template: "<div class='row row-center'>CPF: <b>"+transferForm.cpf+"</b></div>"+
+                "<div class='row row-center'>Número da Conta: <b>"+transferForm.numeroContaCorrente+"</b></div>"+
+                "<div class='row row-center'>Agência: <b>"+transferForm.agency+"</b></div>"+
+                "<div class='row row-center'>Valor: <b>"+parseFloat(transferForm.quantity).toFixed(2)+"</b></div>",
+      cancelText: 'Cancelar',
+      cancelType: 'button-assertive',
+      okText: 'Confirmar',
+      okType: 'button-balanced',
+    });
+
+    confirmPopup.then(function(res){
+      if (res){
+
+        buscaReceiver.equalTo('accountNumber', transferForm.numeroContaCorrente);
+        buscaAgencia.equalTo('agencyCode', transferForm.agency);
+        buscaAgencia.first().then(function(agency){
+          var relacao = agency.relation('clients');
+          var buscaUser = relacao.query();
+          buscaUser.equalTo('cpf', transferForm.cpf);
+          buscaUser.first().then(function(user){
+            buscaReceiver.equalTo('accountOwner', user);
+          });
+        });
+        buscaReceiver.first().then(function(account){
+          var Transactions = Parse.Object.extend('Transaction');
+          var transaction = new Transactions();
+          transaction.set('moneyTransferred', transferForm.quantity);
+          transaction.set('fromOwner', owner);
+          if(account && parseFloat($scope.saldo) - transferForm.quantity >= 0){
+            transaction.set('toReceiver', account);
+            transaction.set('transSuccessful', true);
+            owner.set('balanceAvailable', parseFloat($scope.saldo) - transferForm.quantity);
+            account.increment('balanceAvailable', transferForm.quantity);
+            var alertPopup = $ionicPopup.alert({
+              title: 'Transação realizada',
+              template: 'Transação realizada com sucesso!'
+            });
+            alertPopup.then(function(res){
+              $timeout(function(){
+                $scope.saldo = owner.get('balanceAvailable').toFixed(2);
+              }, 3);
+            });
+          }
+          else {
+            transaction.set('transSuccessful', false);
+            alertPopup = $ionicPopup.alert({
+              title: 'Transação mal-sucedida',
+              template: 'Não há saldo ou os dados estão errados.'
+            });
+          }
+          transaction.save().then(function(transaction){
+            var relationTrans = account.relation('transactionsDone');
+            relationTrans.add(transaction);
+            account.save();
+            relationTrans = owner.relation('transactionsDone');
+            relationTrans.add(transaction);
+            owner.save();
+          });
+        });
+      }
+    });
+  }
 
 })
 
