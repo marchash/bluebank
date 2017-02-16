@@ -125,12 +125,9 @@ angular.module('bluebank.controllers', ['ui.mask'])
     user.set("numeroContaCorrente", signupForm.numeroContaCorrente);
     user.set("cpf", signupForm.cpf);
 
-    var Agencia = Parse.Object.extend("Agency");
+    var Agencia = Parse.Object.extend('Agency');
     buscaAgencia = new Parse.Query(Agencia);
-    buscaAgencia.equalTo('agencyCode', signupForm.agencyCode)
-    buscaAgencia.first().then(function(result){
-      user.set("agencyCode", result);
-    })
+    buscaAgencia.equalTo("agencyCode", signupForm.agency);
 
     user.signUp(null, {
 
@@ -139,6 +136,14 @@ angular.module('bluebank.controllers', ['ui.mask'])
         $timeout(function() {
           $scope.doingSignup = false;
         }, 1);
+
+        buscaAgencia.first().then(function(agency){
+          var relacao = agency.relation('clients');
+          relacao.add(user);
+          agency.save();
+          user.set("agency", agency);
+          user.save();
+        });
 
         var alertPopup = $ionicPopup.alert({
           title: 'Sucesso!',
@@ -153,7 +158,7 @@ angular.module('bluebank.controllers', ['ui.mask'])
           $state.go('app.login');
         });
       },
-      
+
       error: function(user, error) {
         $timeout(function() {
           $scope.doingSignup = false;
@@ -165,5 +170,29 @@ angular.module('bluebank.controllers', ['ui.mask'])
         alert("Erro " + error.code + ": " + error.message);
       }
     });
+  };
+})
+
+.controller('HomeCtrl', function($ionicLoading, $ionicHistory, $scope, $state, $ionicPopup, $timeout, $cordovaGeolocation, $ionicPlatform, $cordovaInAppBrowser) {
+
+
+})
+
+.controller('LogoutCtrl', function($scope, $ionicHistory, $state, usertypeService) {
+
+  $scope.logout = function() {
+    Parse.User.logOut().then(function(){
+      $ionicHistory.nextViewOptions({
+        disableBack: true
+      });
+      $state.go('app.login');
+    });
+  };
+
+  $scope.voltarPagina = function(){
+    $ionicHistory.nextViewOptions({
+      disableBack: true
+    });
+    $state.go('app.home');
   };
 })

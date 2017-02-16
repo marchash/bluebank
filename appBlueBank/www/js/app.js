@@ -21,6 +21,15 @@ angular.module('starter', ['ionic', 'bluebank.controllers', 'bluebank.services',
       abstract: true,
       templateUrl: "templates/menu.html"
     })
+    .state('app.home', {
+      cache: false,
+      url: "/home",
+      views: {
+        'menuContent' : {
+          templateUrl: "templates/home.html"
+        }
+      }
+    })
     .state('app.signup', {
       url: "/signup",
       views: {
@@ -37,7 +46,15 @@ angular.module('starter', ['ionic', 'bluebank.controllers', 'bluebank.services',
           templateUrl: "templates/login.html"
         }
       }
-    });
+    })
+    .state('app.logout', {
+      url: "/logout",
+      views: {
+        'menuContent' : {
+         templateUrl: "templates/logout.html"
+        }
+      }
+    });;
 
   $urlRouterProvider.otherwise("/app/login");
 });

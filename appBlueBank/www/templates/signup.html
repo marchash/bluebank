@@ -1,0 +1,83 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-balanced">
+    <div class="buttons">
+      <button class="button button-icon button-clear ion-android-close" ng-click="closeSignup()"></button>
+    </div>
+    <h1 class="title">Cadastro</h1>
+  </ion-header-bar>
+
+  <ion-content>
+    <div class="content-container">
+      <form name="form" novalidate>
+        <div class="list">
+          <label class="item-input item-floating-label">
+            <span class="input-label">Nome</span>
+            <input type="text"
+                    placeholder="Nome"
+                    ng-model="signupForm.name"
+                    required/>
+          </label>
+
+          <label class="item-input item-floating-label">
+            <span class="input-label">E-mail</span>
+            <input type="email"
+                    placeholder="E-mail"
+                    ng-model="signupForm.email"
+                    required/>
+          </label>
+
+          <label class="item-input item-floating-label">
+            <span class="input-label">CPF</span>
+            <input type="text"
+                    ui-mask-placeholder
+                    ui-mask="***.***.***-**"
+                    placeholder="CPF"
+                    ng-model="signupForm.cpf"
+                    required/>
+          </label>
+
+          <label class="item-input item-floating-label">
+            <span class="input-label">Número da Conta Corrente</span>
+            <input type="text"
+                    placeholder="ContaCorrente"
+                    ng-model="signupForm.numeroContaCorrente"
+                    required/>
+          </label>
+
+          <label class="item-input item-floating-label">
+            <span class="input-label">Código da Agência</span>
+            <input type="text"
+                    placeholder="Agencia"
+                    ng-model="signupForm.agency"
+                    required/>
+          </label>
+
+          <label class="item-input item-floating-label">
+            <span class="input-label">Senha</span>
+            <input type="password"
+                    placeholder="Senha"
+                    ng-model="signupForm.password"
+                    required/>
+          </label>
+
+          <label class="item-input item-floating-label">
+            <span class="input-label">Confirmar senha</span>
+            <input type="password"
+                    placeholder="Confirmar senha"
+                    ng-model="signupForm.confirmPassword"
+                    required/>
+          </label>
+
+          <br>
+
+          <button ng-disabled="form.$invalid || (signupForm.password != signupForm.confirmPassword)"
+                  class="button button-raised button-block button-balanced ink-dark"
+                  ng-click="doSignup(signupForm)">
+            <ion-spinner class="spinner-light" icon="ripple" ng-show="doingSignup"></ion-spinner>
+            <span ng-hide="doingSignup">Cadastrar-me</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </ion-content>
+</ion-modal-view>

@@ -1,0 +1,22 @@
+<ion-view title = 'Logout' ng-controller="LogoutCtrl">
+<ion-nav-bar class="bar-balanced">
+<ion-nav-buttons side="left">
+      <button menu-toggle="left" class="button button-icon ion-navicon"></button>
+</ion-nav-buttons>
+</ion-nav-bar>
+<div class='modal'>
+  <ion-pane>
+    <ion-content padding="true">
+      <form class="list">
+        <div class="item item-divider">
+          Deseja mesmo sair da sua conta?
+        </div>
+          <button class="button button-full button-balanced" ng-click="logout()">Sim</button>
+          <button class="button button-full button-assertive" ng-click='voltarPagina()'>
+            Não
+          </button>
+      </form>
+    </ion-content>
+  </ion-pane>
+</div>
+</ion-view>
