@@ -1,37 +1,6 @@
-# Blue Bank - Estamos contratando!
+#Considerações
+Devido ao prazo estabelecido para realização do teste, apenas a funcionalidade requisitada (criar uma aplicação que possibilite a transferência de fundos entre contas de dois correntistas) foi colocada no aplicativo, criado com Ionic Framework, uma vez que esta é a técnica requisitada para a posição Front-end. Seria necessário mais tempo para colocar algumas funcionalidades extras, como permitir o usuário a alterar seus dados, verificar suas transações, etc.
 
+Para o Back-end, resolvi utilizar o Parse, uma solução que permite a autenticação e manutenção de um banco de dados com as transações, agências e clientes. Verifiquei com a Letícia (que me mandou o teste técnico) se não precisava criar o backend e, com a resposta negativa (O desenvolvimento do Back End fica a seu critério, podendo então realiza-lo da forma que preferir), resolvi utilizar isso para focar na funcionalidade.
 
-**Blue Bank** é uma instituição financeira fictícia cujas demandas de desenvolvimento de software têm aumentado muito nos últimos meses. Tentando manter-se sempre atualizada, busca novos desenvolvedores de software que sejam capazes de solucionar problemas de forma eficaz e elegante.
-
-Como candidato, seu objetivo é desenvolver uma aplicação que seja capaz de demonstrar seus conhecimentos em desenvolvimento frontend e backend, ou seja, provar ser um legítimo desenvolvedor Fullstack.
-
-Para isso será necessário criar uma aplicação que possibilite a transferência de fundos entre contas de dois correntistas.
-
-## Informações importantes sobre o negócio
-Um correntista é identificado pelo seu id, CPF, número da conta corrente e código da agência.
-
-As transferências devem ter controle transacional para evitar débitos e créditos inválidos.
-
-A existência da conta de destino deve ser validada, assim como a existência de fundos suficientes para o valor a ser transferido.
-
-## Requisitos técnicos
-- Interface web.
-- Backend Java EE ou NodeJs.
-- Utilizar OOP.
-- Banco de dados relacional com ORM (Lembre-se que a legislação obriga os bancos a manter dados históricos por anos).
-- Instruções para deploy e execução.
-- Pequeno memorando com justificativa de decisões técnicas.
-
-## Como destacar-se?
-- Aplicar SOLID.
-- Escrever testes unitários com boa cobertura.
-- Arquitetar com SPA + API.
-- Fazer o deploy da aplicação no seu ambiente de nuvem preferido ([IBM Bluemix](https://console.ng.bluemix.net/), AWS, Openshift, Heroku).
-
-
-## Frameworks são bem vindos!
-Angular, jQuery, Bootstrap, Material, ModuleJs, Sequelize, Spring, Hibernate.
-
-## Como enviar o código para análise?
-O desenvolvedor deve criar um projeto no seu Git repo preferido (GitHub, BitBucket, etc). Lembre-se que ele será analisado por desenvolvedores, então não economize nos comentários de commit.
-
+Para utilizar o aplicativo, é necessário ter o Cordova, Ionic e Node instalados no sistema. Para rodar o aplicativo, basta aplicar o fork neste repositório e digitar "ïonic serve" para que a aplicação abra no servidor local.

@@ -1,12 +1,65 @@
-<ion-view title="Página Principal">
+<ion-view title="BlueBank - Transações Bancárias">
   <ion-nav-bar class="bar-balanced">
       <ion-nav-buttons side="left">
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
       </ion-nav-buttons>
     </ion-nav-bar>
   <ion-content class="padding" ng-controller="HomeCtrl as ctrl">
-    Logado!
-    </ion-radio>
+    <h1 style='text-align: center;'>Realizar transação</h1>
+    <br>
+    <h4>Seu saldo é de R${{saldo}}.
+    <h4>Para realizar a transação, digite os dados abaixo: </h4>
+    <br>
+    <div class="content-container">
+        <form name="form" novalidate>
+            <div class="list">
+                <label class="item-input item-floating-label">
+                    <span class="input-label">CPF</span>
+                    <input type="text"
+                            ui-mask-placeholder
+                            ui-mask="999.999.999-99"
+                            placeholder="CPF"
+                            ng-model="transferForm.cpf"
+                            required/>
+                </label>
+
+                <label class="item-input item-floating-label">
+                    <span class="input-label">Conta</span>
+                    <input type="text"
+                            ui-mask-placeholder
+                            ui-mask="9999-9"
+                            placeholder="Número da Conta"
+                            ng-model="transferForm.numeroContaCorrente"
+                            required/>
+                </label>
+
+                <label class="item-input item-floating-label">
+                    <span class="input-label">Agência</span>
+                    <input type="text"
+                            ui-mask-placeholder
+                            ui-mask="99999"
+                            placeholder="Agência"
+                            ng-model="transferForm.agency"
+                            required/>
+                </label>
+
+                <label class="item-input item-floating-label">
+                    <span class="input-label">Valor (R$)</span>
+                    <input type="text" name="field" ui-number-mask
+                            placeholder="Valor"
+                            ng-model="transferForm.quantity"
+                            required/>
+                </label>
+
+                <br>
+
+                <button ng-disabled="form.$invalid"
+                      class="button button-raised button-block button-balanced ink-dark"
+                      ng-click="doTransaction(transferForm)">
+                <span>Transferir</span>
+                </button>
+            </div>
+        </form>
     </div>
   </ion-content>
 </ion-view>
